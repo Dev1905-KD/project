@@ -4,7 +4,11 @@ const cors = require("cors");
 const driver = require("./db");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "DELETE"],
+  allowedHeaders: ["Content-Type"]
+}));
 app.use(express.json());
 
 // API to add task
@@ -45,12 +49,16 @@ app.delete("/delete-all-tasks", async (req, res) => {
   const session = driver.session();
 
   try {
-    await session.run("MATCH (t:Task) DELETE t");
-    console.log("✓ All tasks deleted");
-    res.send("All tasks deleted");
+    const result = await session.run("MATCH (t:Task) DELETE t");
+    console.log("✓ All tasks deleted:", result.summary.counters.updates().nodesDeleted);
+    res.json({ success: true, message: "All tasks deleted" });
   } catch (err) {
     console.error("✗ Error deleting tasks:", err.message);
-    res.status(500).send(err.message);
+    res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      details: err.toString()
+    });
   } finally {
     await session.close();
   }

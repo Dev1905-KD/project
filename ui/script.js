@@ -88,17 +88,20 @@ async function deleteAllTasks() {
             }
         });
 
+        const data = await response.json();
+        
         if (response.ok) {
             tasks = [];
             renderTasks();
             updateProgress();
             alert("All tasks cleared!");
         } else {
-            alert("Error clearing tasks");
+            console.error("Backend error:", data);
+            alert(`Error: ${data.error || data.message || "Error clearing tasks"}`);
         }
     } catch (err) {
         console.error("Failed to delete tasks:", err);
-        alert("Error clearing tasks. Make sure backend is running");
+        alert(`Connection error: ${err.message}`);
     }
 }
 
