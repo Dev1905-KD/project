@@ -2,7 +2,6 @@ services:
   - type: web
     name: productivity-tracker-backend
     runtime: node
-    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     envVars:
@@ -16,3 +15,4 @@ services:
         sync: false
       - key: PORT
         value: "5000"
+
