@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VIT-AP Productivity Tracker</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="main-header">
+
+    <img src="image.png" alt="VIT-AP University Logo">
+
+    <h1 class="main-title">Productivity Tracker</h1>
+
+</header>
+
+
+<!-- DASHBOARD -->
+<div class="container">
+
+    <!-- TASK MANAGER -->
+    <div class="card">
+        <h2>Task Manager</h2>
+
+        <input type="text" id="taskInput" placeholder="Enter task">
+        <button onclick="addTask()">Add</button>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <!-- DAILY GOAL -->
+    <div class="card">
+        <h2>Daily Goal</h2>
+
+        <input type="number" id="goalInput" placeholder="Enter number of tasks">
+        <button onclick="setGoal()">Set Goal</button>
+
+        <p id="goalText"></p>
+    </div>
+
+    <!-- PROGRESS TRACKER -->
+    <div class="card">
+        <h2>Progress Tracker</h2>
+
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+
+        <p id="progressText">0% Completed</p>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="vit-footer">
+
+    <div class="footer-left">
+        Copyright © VIT-AP 2026. All rights reserved
+    </div>
+
+    <div class="footer-center">
+        Crafted with Passion at VIT-AP University by Dev Kaushik
+    </div>
+
+    <div class="footer-right">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+
+</footer>
+
+<button onclick="scrollTopPage()" id="scrollBtn">
+<i class="fas fa-arrow-up"></i>
+</button>
+
+<script src="script.js"></script>
+
+</body>
+</html>
