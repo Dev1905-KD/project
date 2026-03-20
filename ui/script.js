@@ -1,6 +1,6 @@
 let tasks = [];
 let goal = 0;
-const API_URL = "http://localhost:5000";
+const API_URL = "https://productivity-tracker-l4x6.onrender.com";
 
 // Load tasks from backend on page load
 window.addEventListener("DOMContentLoaded", loadTasks);
