@@ -49,7 +49,7 @@ app.delete("/delete-all-tasks", async (req, res) => {
   const session = driver.session();
 
   try {
-    const result = await session.run("MATCH (t:Task) DELETE t");
+    const result = await session.run("MATCH (t:Task) DETACH DELETE t");
     console.log("✓ All tasks deleted:", result.summary.counters.updates().nodesDeleted);
     res.json({ success: true, message: "All tasks deleted" });
   } catch (err) {
