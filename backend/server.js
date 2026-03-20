@@ -17,9 +17,11 @@ app.post("/add-task", async (req, res) => {
       "CREATE (t:Task {title: $title})",
       { title }
     );
+    console.log("✓ Task added:", title);
     res.send("Task added");
   } catch (err) {
-    res.status(500).send(err);
+    console.error("✗ Error adding task:", err.message);
+    res.status(500).send(err.message);
   } finally {
     await session.close();
   }
@@ -39,4 +41,20 @@ app.get("/tasks", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+// Test Neo4j connection on startup
+async function testConnection() {
+  const session = driver.session();
+  try {
+    await session.run("RETURN 1");
+    console.log("✓ Neo4j connection successful");
+  } catch (err) {
+    console.error("✗ Neo4j connection failed:", err.message);
+  } finally {
+    await session.close();
+  }
+}
+
+testConnection();
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
