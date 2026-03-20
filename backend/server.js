@@ -40,6 +40,22 @@ app.get("/tasks", async (req, res) => {
   }
 });
 
+// API to delete all tasks
+app.delete("/delete-all-tasks", async (req, res) => {
+  const session = driver.session();
+
+  try {
+    await session.run("MATCH (t:Task) DELETE t");
+    console.log("✓ All tasks deleted");
+    res.send("All tasks deleted");
+  } catch (err) {
+    console.error("✗ Error deleting tasks:", err.message);
+    res.status(500).send(err.message);
+  } finally {
+    await session.close();
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 // Test Neo4j connection on startup

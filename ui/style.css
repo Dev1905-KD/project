@@ -76,6 +76,15 @@ button:hover {
     background: #6e141a;
 }
 
+/* DELETE BUTTON */
+.btn-delete {
+    background: #dc3545;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
 /* TASK LIST */
 ul {
     list-style: none;

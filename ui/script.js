@@ -77,6 +77,31 @@ function updateProgress() {
         Math.floor(percent) + "% Completed";
 }
 
+async function deleteAllTasks() {
+    if (!confirm("Are you sure you want to delete all tasks?")) return;
+
+    try {
+        const response = await fetch(`${API_URL}/delete-all-tasks`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            tasks = [];
+            renderTasks();
+            updateProgress();
+            alert("All tasks cleared!");
+        } else {
+            alert("Error clearing tasks");
+        }
+    } catch (err) {
+        console.error("Failed to delete tasks:", err);
+        alert("Error clearing tasks. Make sure backend is running");
+    }
+}
+
 function scrollTopPage() {
 
     window.scrollTo({
