@@ -16,16 +16,25 @@ app.post("/add-task", async (req, res) => {
   const session = driver.session();
   const { title } = req.body;
 
+  if (!title || title.trim() === "") {
+    return res.status(400).json({ success: false, error: "Task title cannot be empty" });
+  }
+
   try {
-    await session.run(
-      "CREATE (t:Task {title: $title})",
-      { title }
+    const result = await session.run(
+      "CREATE (t:Task {title: $title}) RETURN t",
+      { title: title.trim() }
     );
+    const task = result.records[0].get("t").properties;
     console.log("✓ Task added:", title);
-    res.send("Task added");
+    res.json({ success: true, task: task, message: "Task added successfully" });
   } catch (err) {
     console.error("✗ Error adding task:", err.message);
-    res.status(500).send(err.message);
+    res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      details: err.toString()
+    });
   } finally {
     await session.close();
   }

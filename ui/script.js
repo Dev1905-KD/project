@@ -42,15 +42,18 @@ async function addTask() {
             body: JSON.stringify({ title: input.value })
         });
 
-        if (response.ok) {
-            tasks.push(input.value);
-            renderTasks();
+        const data = await response.json();
+
+        if (response.ok && data.success) {
             input.value = "";
-            updateProgress();
+            // Reload tasks from database to ensure they're saved
+            await loadTasks();
+        } else {
+            alert(`Error: ${data.error || "Failed to add task"}`);
         }
     } catch (err) {
         console.error("Failed to add task:", err);
-        alert("Error adding task. Make sure backend is running on port 5000");
+        alert(`Error: ${err.message}`);
     }
 }
 
