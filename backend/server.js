@@ -1,17 +1,11 @@
 require("dotenv").config();
 const express = require("express");
-const neo4j = require("neo4j-driver");
 const cors = require("cors");
+const driver = require("./db");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Connect to your DB
-const driver = neo4j.driver(
-  process.env.NEO4J_URI,
-  neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
-);
 
 // API to add task
 app.post("/add-task", async (req, res) => {
