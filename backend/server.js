@@ -5,11 +5,11 @@ const driver = require("./db");
 
 const app = express();
 
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "DELETE"],
-  allowedHeaders: ["Content-Type"]
-}));
+/* =========================
+   ✅ FIXED CORS (IMPORTANT)
+========================= */
+app.use(cors());
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -19,6 +19,10 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
   const session = driver.session();
   const { username, password, fullname, email } = req.body;
+
+  if (!username || !password || !fullname || !email) {
+    return res.status(400).json({ success: false, error: "All fields required" });
+  }
 
   try {
     await session.run(
@@ -35,6 +39,7 @@ app.post("/signup", async (req, res) => {
 
     res.json({ success: true, message: "User created" });
   } catch (err) {
+    console.error("Signup error:", err.message);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -47,6 +52,10 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
   const session = driver.session();
   const { input, password } = req.body;
+
+  if (!input || !password) {
+    return res.status(400).json({ success: false, message: "Missing credentials" });
+  }
 
   try {
     const result = await session.run(
@@ -67,6 +76,7 @@ app.post("/login", async (req, res) => {
 
     res.json({ success: true, user });
   } catch (err) {
+    console.error("Login error:", err.message);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -74,14 +84,14 @@ app.post("/login", async (req, res) => {
 });
 
 /* =========================
-   ➕ ADD TASK (linked to user)
+   ➕ ADD TASK
 ========================= */
 app.post("/add-task", async (req, res) => {
   const session = driver.session();
   const { username, title } = req.body;
 
-  if (!title || title.trim() === "") {
-    return res.status(400).json({ success: false, error: "Task title cannot be empty" });
+  if (!username || !title || title.trim() === "") {
+    return res.status(400).json({ success: false, error: "Invalid task data" });
   }
 
   try {
@@ -99,6 +109,7 @@ app.post("/add-task", async (req, res) => {
 
     res.json({ success: true, task });
   } catch (err) {
+    console.error("Add task error:", err.message);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -106,7 +117,7 @@ app.post("/add-task", async (req, res) => {
 });
 
 /* =========================
-   📥 GET TASKS (user-specific)
+   📥 GET TASKS
 ========================= */
 app.get("/tasks/:username", async (req, res) => {
   const session = driver.session();
@@ -124,6 +135,9 @@ app.get("/tasks/:username", async (req, res) => {
     const tasks = result.records.map(r => r.get("t").properties);
 
     res.json(tasks);
+  } catch (err) {
+    console.error("Get tasks error:", err.message);
+    res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
   }
@@ -147,13 +161,16 @@ app.post("/complete-task", async (req, res) => {
     );
 
     res.json({ success: true, message: "Task completed" });
+  } catch (err) {
+    console.error("Complete task error:", err.message);
+    res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
   }
 });
 
 /* =========================
-   ❌ DELETE ALL TASKS (optional)
+   ❌ DELETE ALL TASKS
 ========================= */
 app.delete("/delete-all-tasks/:username", async (req, res) => {
   const session = driver.session();
@@ -169,16 +186,17 @@ app.delete("/delete-all-tasks/:username", async (req, res) => {
     );
 
     res.json({ success: true, message: "All tasks deleted" });
+  } catch (err) {
+    console.error("Delete tasks error:", err.message);
+    res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
   }
 });
 
 /* =========================
-   🚀 START SERVER
+   🧪 TEST DB CONNECTION
 ========================= */
-const PORT = process.env.PORT || 5000;
-
 async function testConnection() {
   const session = driver.session();
   try {
@@ -193,4 +211,11 @@ async function testConnection() {
 
 testConnection();
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+/* =========================
+   🚀 START SERVER
+========================= */
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
