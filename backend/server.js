@@ -6,7 +6,7 @@ const driver = require("./db");
 const app = express();
 
 /* =========================
-   ✅ FIXED CORS
+   ✅ CORS CONFIG (FINAL)
 ========================= */
 app.use(cors({
   origin: [
@@ -18,12 +18,11 @@ app.use(cors({
 }));
 
 app.options("*", cors());
-app.options("*", cors());
 
 app.use(express.json());
 
 /* =========================
-   🔐 SIGNUP (FIXED)
+   🔐 SIGNUP
 ========================= */
 app.post("/signup", async (req, res) => {
   const session = driver.session();
@@ -47,7 +46,7 @@ app.post("/signup", async (req, res) => {
 
     res.json({ success: true, message: "User created (or already exists)" });
   } catch (err) {
-    console.error("Signup error FULL:", err);
+    console.error("Signup error:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -92,7 +91,7 @@ app.post("/login", async (req, res) => {
 });
 
 /* =========================
-   ➕ ADD TASK
+   ➕ ADD TASK (FIXED)
 ========================= */
 app.post("/add-task", async (req, res) => {
   const session = driver.session();
@@ -106,16 +105,29 @@ app.post("/add-task", async (req, res) => {
     const result = await session.run(
       `
       MATCH (u:User {username: $username})
-      CREATE (t:Task {title: $title, status: "pending"})
-      CREATE (u)-[:HAS_TASK]->(t)
+      WITH u
+      WHERE u IS NOT NULL
+      CREATE (u)-[:HAS_TASK]->(t:Task {
+        title: $title,
+        status: "pending"
+      })
       RETURN t
       `,
       { username, title: title.trim() }
     );
 
+    // ✅ Prevent crash
+    if (result.records.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
+    }
+
     const task = result.records[0].get("t").properties;
 
     res.json({ success: true, task });
+
   } catch (err) {
     console.error("Add task error:", err);
     res.status(500).json({ success: false, error: err.message });
@@ -178,7 +190,7 @@ app.post("/complete-task", async (req, res) => {
 });
 
 /* =========================
-   ❌ DELETE TASKS
+   ❌ DELETE ALL TASKS
 ========================= */
 app.delete("/delete-all-tasks/:username", async (req, res) => {
   const session = driver.session();
@@ -203,15 +215,15 @@ app.delete("/delete-all-tasks/:username", async (req, res) => {
 });
 
 /* =========================
-   🧪 TEST DB
+   🧪 TEST DB CONNECTION
 ========================= */
 async function testConnection() {
   const session = driver.session();
   try {
     await session.run("RETURN 1");
-    console.log("✓ Neo4j connected");
+    console.log("✅ Neo4j connected");
   } catch (err) {
-    console.error("✗ Neo4j connection failed:", err.message);
+    console.error("❌ Neo4j connection failed:", err.message);
   } finally {
     await session.close();
   }
@@ -225,5 +237,5 @@ testConnection();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
