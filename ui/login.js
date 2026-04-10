@@ -23,13 +23,8 @@ function showLogin() {
 async function loginUser(event) {
     event.preventDefault();
 
-    const input = document.getElementById("emailInput").value.trim(); // 🔥 rename
+    const input = document.getElementById("emailInput").value.trim();
     const password = document.getElementById("passwordInput").value;
-
-    if (!input || !password) {
-        alert("Please enter both email and password.");
-        return;
-    }
 
     try {
         const response = await fetch(`${API_URL}/login`, {
@@ -37,25 +32,25 @@ async function loginUser(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                input: input,      // 🔥 IMPORTANT FIX
-                password: password
-            })
+            body: JSON.stringify({ input, password })
         });
 
         const data = await response.json();
 
+        console.log("LOGIN RESPONSE:", data); // 🔍 DEBUG
+
         if (response.ok && data.success) {
             localStorage.setItem("authUser", input);
-            alert("Login successful!");
-            window.location.href = "index.html";
+
+            console.log("Redirecting now...");
+            window.location.replace("/index.html"); // ✅ FIX
         } else {
-            alert(data.message || "Invalid credentials");
+            alert(data.message || "Login failed");
         }
 
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to server");
+        alert("Server error");
     }
 }
 
