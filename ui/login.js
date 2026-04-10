@@ -1,4 +1,4 @@
-const API_URL = "https://project-2hdc.onrender.com";
+const API_URL = "https://project-2hdc.onrender.com/";
 
 window.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("authToken")) {
