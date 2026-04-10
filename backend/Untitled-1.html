@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Details</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: centerleft;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Employee Management System</h1>
+
+<button onclick="showList()">Show EmpID & Address</button>
+<button onclick="showTable()">Show EmpID & Contact</button>
+
+<div id="output"></div>
+
+<script>
+function loadXML(callback) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            callback(this.responseXML);
+        }
+    };
+    xhttp.open("GET", "Untitled-1.xml", true);
+    xhttp.send();
+}
+
+// Button 1 → Unordered List
+function showList() {
+    loadXML(function(xml) {
+        var emp = xml.getElementsByTagName("emp");
+        var output = "<ol>";
+
+        for (var i = 0; i < emp.length; i++) {
+            var id = emp[i].getElementsByTagName("empid")[0].childNodes[0].nodeValue;
+            var addr = emp[i].getElementsByTagName("address")[0].childNodes[0].nodeValue;
+
+            output += "<li>EmpID: " + id + " | Address: " + addr + "</li>";
+        }
+
+        output += "</ol>";
+        document.getElementById("output").innerHTML = output;
+    });
+}
+
+// Button 2 → Table
+function showTable() {
+    loadXML(function(xml) {
+        var emp = xml.getElementsByTagName("emp");
+        var output = "<table><tr><th>EmpID</th><th>Contact</th></tr>";
+
+        for (var i = 0; i < emp.length; i++) {
+            var id = emp[i].getElementsByTagName("empid")[0].childNodes[0].nodeValue;
+            var contact = emp[i].getElementsByTagName("contact")[0].childNodes[0].nodeValue;
+
+            output += "<tr><td>" + id + "</td><td>" + contact + "</td></tr>";
+        }
+
+        output += "</table>";
+        document.getElementById("output").innerHTML = output;
+    });
+}
+</script>
+
+</body>
+</html>

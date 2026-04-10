@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - VIT-AP Productivity Tracker</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <img src="image.png" alt="VIT-AP University Logo">
+        <h1 class="main-title">Productivity Tracker</h1>
+    </header>
+
+    <div class="container auth-container">
+        <div class="auth-card" id="loginCard">
+            <h2>Member Login</h2>
+            <form id="loginForm">
+                <label for="emailInput">Email</label>
+                <input id="emailInput" type="email" placeholder="name@example.com" required>
+
+                <label for="passwordInput">Password</label>
+                <input id="passwordInput" type="password" placeholder="Password" required>
+
+                <div class="auth-actions">
+                    <button type="submit">Login</button>
+                    <button type="button" class="link-button" onclick="showRegister()">Create account</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="auth-card hidden" id="registerCard">
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <label for="nameInput">Full Name</label>
+                <input id="nameInput" type="text" placeholder="Your Name" required>
+
+                <label for="registerEmailInput">Email</label>
+                <input id="registerEmailInput" type="email" placeholder="name@example.com" required>
+
+                <label for="registerPasswordInput">Password</label>
+                <input id="registerPasswordInput" type="password" placeholder="Password" required>
+
+                <div class="auth-actions">
+                    <button type="submit">Register</button>
+                    <button type="button" class="link-button" onclick="showLogin()">Back to login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

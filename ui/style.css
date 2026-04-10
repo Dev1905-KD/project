@@ -113,6 +113,81 @@ li {
     transition: 0.4s;
 }
 
+/* AUTH UI */
+.auth-container {
+    max-width: 420px;
+    margin: 40px auto;
+}
+
+.auth-card {
+    background: white;
+    padding: 30px 25px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.auth-card h2 {
+    margin-top: 0;
+    color: #8b1d24;
+}
+
+.auth-card label {
+    display: block;
+    margin: 15px 0 6px;
+    font-weight: 500;
+}
+
+.auth-card input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.auth-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.link-button {
+    background: transparent;
+    border: none;
+    color: #8b1d24;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.auth-note {
+    margin-top: 18px;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.auth-bar {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.logout-button {
+    padding: 10px 16px;
+    background: #dc3545;
+    border: none;
+    border-radius: 8px;
+    color: white;
+}
+
+.logout-button:hover {
+    background: #c82333;
+}
+
 /* FOOTER */
 .vit-footer {
     background-color: #8b1d24;

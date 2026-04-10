@@ -1,13 +1,41 @@
 let tasks = [];
 let goal = 0;
 const API_URL = "https://project-2hdc.onrender.com";
+const authToken = localStorage.getItem("authToken");
+const authName = localStorage.getItem("authName");
 
-// Load tasks from backend on page load
-window.addEventListener("DOMContentLoaded", loadTasks);
+function getAuthHeaders() {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+    if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`;
+    }
+    return headers;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    if (!authToken) {
+        window.location.href = "login.html";
+        return;
+    }
+    const welcomeText = document.getElementById("welcomeText");
+    if (welcomeText) {
+        welcomeText.innerText = `Welcome, ${authName || "Member"}!`;
+    }
+    loadTasks();
+});
 
 async function loadTasks() {
+    if (!authToken) {
+        window.location.href = "login.html";
+        return;
+    }
+
     try {
-        const response = await fetch(`${API_URL}/tasks`);
+        const response = await fetch(`${API_URL}/tasks`, {
+            headers: getAuthHeaders()
+        });
         const dbTasks = await response.json();
         tasks = dbTasks.map(t => t.title);
         renderTasks();
@@ -36,9 +64,7 @@ async function addTask() {
     try {
         const response = await fetch(`${API_URL}/add-task`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify({ title: input.value })
         });
 
@@ -86,9 +112,7 @@ async function deleteAllTasks() {
     try {
         const response = await fetch(`${API_URL}/delete-all-tasks`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: getAuthHeaders()
         });
 
         const data = await response.json();
@@ -106,6 +130,12 @@ async function deleteAllTasks() {
         console.error("Failed to delete tasks:", err);
         alert(`Connection error: ${err.message}`);
     }
+}
+
+function logout() {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authName");
+    window.location.href = "login.html";
 }
 
 function scrollTopPage() {
