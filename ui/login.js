@@ -23,10 +23,10 @@ function showLogin() {
 async function loginUser(event) {
     event.preventDefault();
 
-    const email = document.getElementById("emailInput").value.trim();
+    const input = document.getElementById("emailInput").value.trim(); // 🔥 rename
     const password = document.getElementById("passwordInput").value;
 
-    if (!email || !password) {
+    if (!input || !password) {
         alert("Please enter both email and password.");
         return;
     }
@@ -37,20 +37,25 @@ async function loginUser(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({
+                input: input,      // 🔥 IMPORTANT FIX
+                password: password
+            })
         });
 
         const data = await response.json();
 
-        if (response.ok && data.token) {
-            saveAuthData(data, email);
+        if (response.ok && data.success) {
+            localStorage.setItem("authUser", input);
+            alert("Login successful!");
             window.location.href = "index.html";
         } else {
-            alert(`Login failed: ${data.error || data.message || "Please try again."}`);
+            alert(data.message || "Invalid credentials");
         }
+
     } catch (err) {
-        console.error("Login error:", err);
-        alert("Unable to connect to the server. Please try again later.");
+        console.error(err);
+        alert("Unable to connect to server");
     }
 }
 
