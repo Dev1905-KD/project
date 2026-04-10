@@ -9,8 +9,15 @@ const app = express();
    ✅ FIXED CORS
 ========================= */
 app.use(cors({
-  origin: "https://productivity-tracker-vitap.netlify.app"
+  origin: [
+    "https://productivitytrackerweb.netlify.app",
+    "https://productivity-tracker-vitap.netlify.app"
+  ],
+  methods: ["GET", "POST", "DELETE"],
+  allowedHeaders: ["Content-Type"]
 }));
+
+app.options("*", cors());
 app.options("*", cors());
 
 app.use(express.json());
