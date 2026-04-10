@@ -57,11 +57,11 @@ async function loginUser(event) {
 async function registerUser(event) {
     event.preventDefault();
 
-    const name = document.getElementById("nameInput").value.trim();
+    const fullname = document.getElementById("nameInput").value.trim();
     const email = document.getElementById("registerEmailInput").value.trim();
     const password = document.getElementById("registerPasswordInput").value;
 
-    if (!name || !email || !password) {
+    if (!fullname || !email || !password) {
         alert("Please complete all fields.");
         return;
     }
@@ -72,20 +72,26 @@ async function registerUser(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ name, email, password })
+            body: JSON.stringify({
+                username: email,   // 🔥 REQUIRED
+                fullname: fullname,
+                email: email,
+                password: password
+            })
         });
 
         const data = await response.json();
 
-        if (response.ok && data.token) {
-            saveAuthData(data, name);
-            window.location.href = "index.html";
+        if (response.ok) {
+            alert("Registration successful!");
+            showLogin();
         } else {
-            alert(`Registration failed: ${data.error || data.message || "Please try again."}`);
+            alert(data.error || data.message);
         }
+
     } catch (err) {
-        console.error("Registration error:", err);
-        alert("Unable to connect to the server. Please try again later.");
+        console.error(err);
+        alert("Unable to connect to server");
     }
 }
 
