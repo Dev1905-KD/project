@@ -6,7 +6,7 @@ const driver = require("./db");
 const app = express();
 
 /* =========================
-   ✅ FIXED CORS (IMPORTANT)
+   ✅ FIXED CORS
 ========================= */
 app.use(cors());
 app.options("*", cors());
@@ -14,7 +14,7 @@ app.options("*", cors());
 app.use(express.json());
 
 /* =========================
-   🔐 SIGNUP
+   🔐 SIGNUP (FIXED)
 ========================= */
 app.post("/signup", async (req, res) => {
   const session = driver.session();
@@ -27,19 +27,18 @@ app.post("/signup", async (req, res) => {
   try {
     await session.run(
       `
-      CREATE (u:User {
-        username: $username,
-        password: $password,
-        fullname: $fullname,
-        email: $email
-      })
+      MERGE (u:User {email: $email})
+      ON CREATE SET
+        u.username = $username,
+        u.password = $password,
+        u.fullname = $fullname
       `,
       { username, password, fullname, email }
     );
 
-    res.json({ success: true, message: "User created" });
+    res.json({ success: true, message: "User created (or already exists)" });
   } catch (err) {
-    console.error("Signup error:", err.message);
+    console.error("Signup error FULL:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -76,7 +75,7 @@ app.post("/login", async (req, res) => {
 
     res.json({ success: true, user });
   } catch (err) {
-    console.error("Login error:", err.message);
+    console.error("Login error:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -109,7 +108,7 @@ app.post("/add-task", async (req, res) => {
 
     res.json({ success: true, task });
   } catch (err) {
-    console.error("Add task error:", err.message);
+    console.error("Add task error:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -136,7 +135,7 @@ app.get("/tasks/:username", async (req, res) => {
 
     res.json(tasks);
   } catch (err) {
-    console.error("Get tasks error:", err.message);
+    console.error("Get tasks error:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -162,7 +161,7 @@ app.post("/complete-task", async (req, res) => {
 
     res.json({ success: true, message: "Task completed" });
   } catch (err) {
-    console.error("Complete task error:", err.message);
+    console.error("Complete task error:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -170,7 +169,7 @@ app.post("/complete-task", async (req, res) => {
 });
 
 /* =========================
-   ❌ DELETE ALL TASKS
+   ❌ DELETE TASKS
 ========================= */
 app.delete("/delete-all-tasks/:username", async (req, res) => {
   const session = driver.session();
@@ -185,9 +184,9 @@ app.delete("/delete-all-tasks/:username", async (req, res) => {
       { username }
     );
 
-    res.json({ success: true, message: "All tasks deleted" });
+    res.json({ success: true });
   } catch (err) {
-    console.error("Delete tasks error:", err.message);
+    console.error("Delete tasks error:", err);
     res.status(500).json({ success: false, error: err.message });
   } finally {
     await session.close();
@@ -195,7 +194,7 @@ app.delete("/delete-all-tasks/:username", async (req, res) => {
 });
 
 /* =========================
-   🧪 TEST DB CONNECTION
+   🧪 TEST DB
 ========================= */
 async function testConnection() {
   const session = driver.session();
